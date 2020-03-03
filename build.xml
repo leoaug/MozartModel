@@ -1,0 +1,42 @@
+<project default="deploy" basedir="./">
+
+	<property name="jboss.home" value="C:/bbts/WildFly 16.0/wildfly-16.0.0.Final" />
+	<property name="jboss.home.server" value="${jboss.home}/standalone" />
+	<property name="jboss.home.server.lib" value="${jboss.home.server}/lib" />
+	<property name="mozart.web.ear.lib" value="../AppMozartWeb/EarContent/lib" />
+	<property name="mozart.nfse.ear.lib" value="../MozartWebServicesEAR/EarContent/lib" />
+	<!-- Build -->
+	<property name="artefact.name" value="MozartModel.jar" />
+	<property name="build.dir" value="build" />
+	<property name="build.dir.classes" value="${build.dir}/classes" />
+	<property name="build.dir.jar" value="${build.dir}/jar" />
+	<property name="project.jar" value="${build.dir.jar}/${artefact.name}" />
+	<!-- Destination -->
+	<property name="dest.mozart.taglib.lib" value="../MozartTagLib/lib" />
+
+	<path id="build.classpath">
+		<fileset dir="${jboss.home.server.lib}" includes="**/*.jar" />
+		<fileset dir="${mozart.web.ear.lib}" includes="**/*.jar" />
+		<fileset dir="${mozart.nfse.ear.lib}" includes="**/*.jar" />
+	</path>
+
+	<target name="clean">
+		<delete dir="build" />
+	</target>
+
+	<target name="compile" depends="clean">
+		<echo message="${jboss.home.server.lib}" />
+		<mkdir dir="build/classes" />
+		<javac srcdir="ejbModule" destdir="build/classes" nowarn="true" includeantruntime="false" debug="true">
+			<classpath refid="build.classpath" />
+		</javac>
+	</target>
+
+	<target name="deploy" depends="compile">
+		<mkdir dir="${build.dir.jar}" />
+		<jar destfile="${project.jar}" basedir="${build.dir.classes}" />
+		<copy file="${project.jar}" todir="${dest.mozart.taglib.lib}" overwrite="true" />
+		<delete dir="${build.dir}" />
+	</target>
+	
+</project>

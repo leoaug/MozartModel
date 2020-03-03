@@ -1,0 +1,316 @@
+package com.mozart.model.dao;
+
+import com.mozart.model.delegate.EmailDelegate;
+import com.mozart.model.ejb.entity.AlfaArquivoEJB;
+import com.mozart.model.ejb.entity.AlfaCertificadoEJB;
+import com.mozart.model.exception.MozartSessionException;
+
+import com.mozart.model.util.MozartModelConstantes;
+import com.mozart.model.util.MozartUtil;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+
+public class AlfaSeguradoraDAO extends MozartDAO{
+
+    public AlfaSeguradoraDAO() {
+
+    
+    }
+    
+    private final String INCLUIR_ARQUIVO =
+            "INSERT INTO alfa_arquivo(id_arquivo, tipo_layout, dt_geracao, cod_origem, dsc_emrpesa, qtde_registro) VALUES\n" + 
+            "(?, ?, ?, ?, ?, ? )\n";
+
+    private final String ALTERAR_ARQUIVO = 
+            "UPDATE alfa_arquivo SET tipo_layout=?, dt_geracao=?, cod_origem=?, dsc_emrpesa=?, qtde_registro=? \n" + 
+            "WHERE id_arquivo=?";
+            
+    private final String INCLUIR_CERTIFICADO = 
+            "INSERT INTO alfa_certificado(id_certificado, id_arquivo, cod_seguro, flg_usado, flg_visivel) VALUES\n" + 
+            "(?, ?, ?, ?, ?)";
+
+    private final String ALTERAR_CERTIFICADO = 
+            "UPDATE alfa_certificado SET cod_seguro=?, flg_usado=?, flg_visivel=?\n" + 
+            "WHERE id_certificado = ?";
+    
+    public void gravarArquivo(AlfaArquivoEJB arquivo) throws MozartSessionException{
+        Connection conn = null;
+        PreparedStatement st = null;
+        StringBuilder trace = new StringBuilder();
+        try{
+               trace.append(" - Iniciando gracacao");
+               conn = newConnection();
+               trace.append(" - Obteve a conexao: " + conn);
+               if (conn == null){
+                    throw new MozartSessionException("Não foi possível obter a conexao");
+               }
+               conn.setAutoCommit( Boolean.FALSE);
+               trace.append(" - Autocommit ");
+
+               int x = 1; 
+               st = conn.prepareStatement( ALTERAR_ARQUIVO );
+               st.setString     ( x++, arquivo.getTipoLayout()  );
+               st.setTimestamp  ( x++, arquivo.getDtGeracao()   );
+               st.setString     ( x++, arquivo.getCodOrigem()   );
+               st.setString     ( x++, arquivo.getDscEmrpesa()  );
+               st.setLong       ( x++, arquivo.getQtdeRegistro());
+               st.setLong       ( x++, arquivo.getIdArquivo()   );
+               x = st.executeUpdate();
+               trace.append(" - 59");
+               st.close();
+               if (x == 0){
+                    //incluir tudo
+                     trace.append(" - 63");
+                   x = 1; 
+                   st = conn.prepareStatement( INCLUIR_ARQUIVO );
+                   st.setLong       ( x++, arquivo.getIdArquivo()    );
+                   st.setString     ( x++, arquivo.getTipoLayout()   );
+                   st.setTimestamp  ( x++, arquivo.getDtGeracao()    );
+                   st.setString     ( x++, arquivo.getCodOrigem()    );
+                   st.setString     ( x++, arquivo.getDscEmrpesa()   );
+                   st.setLong       ( x++, arquivo.getQtdeRegistro() );
+                   st.executeUpdate(); 
+                   st.close();
+                   
+                   st = conn.prepareStatement( INCLUIR_CERTIFICADO );
+                   for (AlfaCertificadoEJB cert: arquivo.getAlfaCertificadoEJBList()){
+                       x = 1;
+                       st.setLong       ( x++, cert.getIdCertificado()    );
+                       st.setLong       ( x++, arquivo.getIdArquivo()     );
+                       st.setString     ( x++, cert.getCodSeguro()     );
+                       st.setString     ( x++, cert.getFlgUsado()     );
+                       st.setString     ( x++, cert.getFlgVisivel()     );
+                       st.addBatch();                   
+                   } 
+                   st.executeBatch();
+                   
+               }else{
+                   trace.append(" - 88");
+
+                    for (AlfaCertificadoEJB cert: arquivo.getAlfaCertificadoEJBList()){
+                            st = conn.prepareStatement( ALTERAR_CERTIFICADO );
+                            x = 1;
+                            st.setString     ( x++, cert.getCodSeguro()     );
+                            st.setString     ( x++, cert.getFlgUsado()     );
+                            st.setString     ( x++, cert.getFlgVisivel()     );
+                            st.setLong       ( x++, cert.getIdCertificado()    );
+                            x = st.executeUpdate();
+                            st.close();
+                            if (x == 0 ){
+                                st = conn.prepareStatement( INCLUIR_CERTIFICADO );
+                                x = 1;
+                                st.setLong       ( x++, cert.getIdCertificado()    );
+                                st.setLong       ( x++, arquivo.getIdArquivo()     );
+                                st.setString     ( x++, cert.getCodSeguro()     );
+                                st.setString     ( x++, cert.getFlgUsado()     );
+                                st.setString     ( x++, cert.getFlgVisivel()     );
+                                x = st.executeUpdate();
+                                st.close();
+                            }
+                    }
+                   trace.append(" - 111");
+
+               }        
+               conn.commit();     
+        }catch(Exception ex){
+            throw new MozartSessionException("Erro ao importar arquivo: " + trace.toString() + " - " +ex.getMessage());         
+        
+        }finally{
+            fecharRecurso(conn, null, st);
+        }    
+    }
+
+    private static final String QUERY_NOVOS_ROOM_LIST = 
+        "select rl.id_room_list, h.email, hot.nome_fantasia, hot.email email_hotel \n" + 
+        "from apartamento a, checkin c, controla_data cd, empresa_seguradora es, room_list rl, hospede h, hotel hot\n" + 
+        "where es.id_seguradora = 82\n" + 
+        "and (es.dt_fim_seguro is null or es.dt_fim_seguro >= cd.front_office)\n" +
+        "and (cd.front_office >= es.dt_inicio_seguro)\n" + 
+        "and es.id_hotel_segurado = cd.id_hotel\n" + 
+        "and es.id_hotel_segurado = c.id_hotel\n" +
+        "and a.id_apartamento = c.id_apartamento and a.cofan = 'N'\n "+
+        "and trunc(rl.data_entrada) = trunc(cd.front_office)\n" + 
+        "and rl.data_saida is null \n" +
+        "and c.checkout = 'N' " +
+        "and c.id_checkin = rl.id_checkin\n" + 
+        "and rl.chegou = 'S'\n" + 
+        "and rl.cod_certificado is null and rl.id_hospede = h.id_hospede and hot.id_hotel = es.id_hotel_segurado\n";
+        
+    private static final String ALTERAR_ROOM_LIST = 
+        " UPDATE ROOM_LIST SET COD_CERTIFICADO = ?, data_certificado = SYSDATE WHERE ID_ROOM_LIST = ? ";
+
+    private static String MENSAGEM = 
+        "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n" + 
+        "<tr><td><b>Prezado(a) hóspede</b>, </td></tr>\n" + 
+        "<tr><td>Segue link com o seu certificado de seguro enquanto hospedado conosco: </td></tr>\n" + 
+        "<tr><td><a target=\"_blank\" href=\"http://iasserver.mozart.com.br/Web/pages/certificadoAlfa.jsp?currentSessionID=%s\">Consulte seu certificado</a> </td></tr>\n" + 
+        "<tr><td>Obrigado, </td></tr>\n" + 
+        "<tr><td><b>%s</b> </td></tr>\n" + 
+        "</table>";
+    public void gerarCertificados() throws MozartSessionException{
+    
+        Connection conn = null;
+        PreparedStatement st = null, stNum = null, stCert = null;
+        ResultSet rs = null;
+        try{
+               conn = newConnection();
+               if (conn == null){
+                    throw new MozartSessionException("Não foi possível obter a conexao: gerarCertificados");
+               }
+               conn.setAutoCommit( Boolean.FALSE);
+               st = conn.prepareStatement( QUERY_NOVOS_ROOM_LIST );
+               rs = st.executeQuery();
+               stNum = conn.prepareStatement(ALTERAR_ROOM_LIST);
+               stCert = conn.prepareStatement(ALTERAR_CERTIFICADO);
+               
+               while (rs.next()){
+                   String email = "";
+                   String hotel = "";
+                   String emailHotel = "";
+                   Long idCertificado = nextCertificado();
+                   stNum.setLong(1, idCertificado);
+                   stNum.setLong(2, rs.getLong(1));
+                   stNum.executeUpdate();
+                   stNum.clearParameters();
+
+                   stCert.setString(1, "0000000000");    
+                   stCert.setString(2, "S");    
+                   stCert.setString(3, "S");    
+                   stCert.setLong(4, idCertificado);    
+                   stCert.executeUpdate();
+                   stCert.clearParameters();
+                   //enviar email para o hospede
+                   email = rs.getString(2);
+                   hotel = rs.getString(3);
+                   emailHotel = rs.getString(4);
+                   conn.commit();
+            	   EmailDelegate.instance().send(emailHotel, MozartUtil.isNull(email)? MozartModelConstantes.EMAIL_ADM_MOZART[0]:email, 
+                                                 MozartModelConstantes.EMAIL_ADM_MOZART[1], 
+                                                 "Certificado de seguro ALFA Seguradora", 
+                                                 String.format(MENSAGEM, (Object[])new String[]{idCertificado+"", hotel}));
+               }
+               
+        }catch(Exception ex){
+            throw new MozartSessionException("Erro ao gerar certificados arquivo - " +ex.getMessage());         
+        
+        }finally{
+            fecharRecurso(conn, rs, st);
+            fecharRecurso(null, null, stNum);
+            fecharRecurso(null, null, stCert);
+        }    
+    }
+    
+    /*private static final String QUERY_NEXT_CERTIFICADO = 
+                                "select min(cert.id_certificado)id_certificado\n" + 
+                                "from alfa_certificado cert\n" + 
+                                "where cert.id_certificado not in (\n" + 
+                                "select rl.cod_certificado \n" + 
+                                "from room_list rl\n" + 
+                                "where rl.id_hotel in (\n" + 
+                                "select id_hotel_segurado from \n" + 
+                                "empresa_seguradora es\n" + 
+                                "where dt_fim_seguro is null\n" + 
+                                "and id_seguradora = 82)\n" + 
+                                "and rl.cod_certificado is not null\n" + 
+                                "and rl.id_checkin is not null)\n";*/
+
+    private static final String QUERY_NEXT_CERTIFICADO = 
+				        "select min(cert.id_certificado)id_certificado\n" + 
+				        "from alfa_certificado cert\n" + 
+				        "where cert.flg_usado = 'N' and cert.flg_visivel = 'S'"; 
+				        
+    private Long nextCertificado() throws MozartSessionException{
+        Connection conn = null;
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        try{
+            conn = newConnection();
+            if (conn == null){
+                 throw new MozartSessionException("Não foi possível obter a conexao: nextCertificado");
+            }
+        
+            st = conn.prepareStatement(QUERY_NEXT_CERTIFICADO);
+            rs = st.executeQuery();
+            rs.next();
+            Long idCertificado = rs.getLong(1);
+            return idCertificado;    
+        }catch(Exception ex){
+            ex.printStackTrace();
+            throw new MozartSessionException(ex.getMessage());
+        }finally{
+            fecharRecurso(conn, rs, st);
+        
+        }
+    }
+/*    private static final String QUERY_QTDE_CERTIFICADO = 
+                                "select count(cert.id_certificado)\n" + 
+                                "from alfa_certificado cert\n" + 
+                                "where cert.id_certificado not in (\n" + 
+                                "select rl.cod_certificado \n" + 
+                                "from room_list rl\n" + 
+                                "where rl.id_hotel in (\n" + 
+                                "select id_hotel_segurado from \n" + 
+                                "empresa_seguradora es\n" + 
+                                "where dt_fim_seguro is null\n" + 
+                                "and id_seguradora = 82)\n" + 
+                                "and rl.cod_certificado is not null\n" + 
+                                "and rl.id_checkin is not null)\n";*/
+    
+    private static final String QUERY_QTDE_CERTIFICADO =  
+							        "select count(*)\n" + 
+							        "from alfa_certificado cert\n" + 
+							        "where cert.flg_usado = 'N' and cert.flg_visivel = 'S' "; 
+
+    
+    public Long getQtdeCertificadosFree() throws MozartSessionException{
+        Connection conn = null;
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        try{
+            conn = newConnection();
+            if (conn == null){
+                 throw new MozartSessionException("Não foi possível obter a conexao: getQtdeCertificadosFree");
+            }
+        
+            st = conn.prepareStatement(QUERY_QTDE_CERTIFICADO);
+            rs = st.executeQuery();
+            rs.next();
+            Long idCertificado = rs.getLong(1);
+            return idCertificado;    
+        }catch(Exception ex){
+            ex.printStackTrace();
+            throw new MozartSessionException(ex.getMessage());
+        }finally{
+            fecharRecurso(conn, rs, st);
+        
+        }
+    
+    }
+
+    public Long nextFileSeq(String sequenceName) throws MozartSessionException{
+        Connection conn = null;
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        try{
+            conn = newConnection();
+            if (conn == null){
+                 throw new MozartSessionException("Não foi possível obter a conexao: getQtdeCertificadosFree");
+            }
+        
+            st = conn.prepareStatement("select "+sequenceName+".nextval from dual");
+            rs = st.executeQuery();
+            rs.next();
+            Long idCertificado = rs.getLong(1);
+            return idCertificado;    
+        }catch(Exception ex){
+            ex.printStackTrace();
+            throw new MozartSessionException(ex.getMessage());
+        }finally{
+            fecharRecurso(conn, rs, st);
+        
+        }
+    }
+}

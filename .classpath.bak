@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="/AppMozartWeb/EarContent/lib/axis.jar"/>
+	<classpathentry kind="lib" path="/AppMozartWeb/EarContent/lib/ejb30.jar"/>
+	<classpathentry kind="lib" path="/AppMozartWeb/EarContent/lib/ocrs12.jar"/>
+	<classpathentry kind="lib" path="/AppMozartWeb/EarContent/lib/ojdbc14.jar"/>
+	<classpathentry kind="lib" path="/AppMozartWeb/EarContent/lib/ojdl.jar"/>
+	<classpathentry kind="lib" path="/AppMozartWeb/EarContent/lib/orai18n.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.generic.runtimeTarget/JBoss v4.2"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/MozartNFse"/>
+	<classpathentry kind="lib" path="/AppMozartWeb/EarContent/lib/log4j.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6">
+		<attributes>
+			<attribute name="owner.project.facets" value="java"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

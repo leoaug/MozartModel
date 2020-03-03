@@ -1,0 +1,4 @@
+eclipse.preferences.version=1
+entitygen.DEFAULT_PACKAGE=model
+org.eclipse.jpt.core.discoverAnnotatedClasses=true
+org.eclipse.jpt.core.platform=org.eclipse.eclipselink.platform

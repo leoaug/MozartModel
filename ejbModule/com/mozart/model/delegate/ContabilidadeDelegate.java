@@ -1,0 +1,182 @@
+package com.mozart.model.delegate;
+
+
+import java.util.Date;
+import java.util.List;
+
+import com.mozart.model.ejb.entity.CentroCustoContabilEJB;
+import com.mozart.model.ejb.entity.ClassificacaoContabilEJB;
+import com.mozart.model.ejb.entity.HotelEJB;
+import com.mozart.model.ejb.entity.MovimentoContabilEJB;
+import com.mozart.model.ejb.entity.RedeHotelEJB;
+import com.mozart.model.ejb.facade.ContabilidadeSession;
+import com.mozart.model.exception.MozartSessionException;
+import com.mozart.model.vo.ClassificacaoContabilCentroCustoVO;
+import com.mozart.model.vo.ClassificacaoContabilFaturamentoGrupoVO;
+import com.mozart.model.vo.ClassificacaoContabilFaturamentoVO;
+import com.mozart.model.vo.ClassificacaoContabilPadraoVO;
+import com.mozart.model.vo.DemonstrativoVO;
+import com.mozart.model.vo.ImobilizadoDepreciacaoVO;
+import com.mozart.model.vo.MovimentoContabilVO;
+import com.mozart.model.vo.PlanoContaVO;
+
+public class ContabilidadeDelegate extends MozartDelegate{
+
+
+    private static ContabilidadeDelegate instance;
+    private static ContabilidadeSession session;
+
+    private ContabilidadeDelegate() throws MozartSessionException {
+    
+        try{
+        
+            session = (ContabilidadeSession) getLookup("ContabilidadeSession");
+            if (session == null){
+                throw new MozartSessionException("Não foi possivel localizar: ContabilidadeSession");            
+            }
+        }catch(Exception ex){
+        
+            throw new MozartSessionException(ex.getMessage());             
+        
+        }
+    
+    }
+    
+    public static ContabilidadeDelegate instance() throws MozartSessionException{
+    
+        return instance==null?instance = new ContabilidadeDelegate() : instance;
+    
+    }
+
+	public List<MovimentoContabilVO> pesquisarMovimentoContabil(
+			MovimentoContabilVO filtro) throws MozartSessionException{
+		return session.pesquisarMovimentoContabil(filtro);
+	}
+
+	public MovimentoContabilVO obterSaldoMovimentoContabil(HotelEJB hotel)throws MozartSessionException{
+		return session.obterSaldoMovimentoContabil(hotel);
+	}
+
+	public void encerrarMovimentoContabil(MovimentoContabilEJB entidadeMov)throws MozartSessionException{
+		session.encerrarMovimentoContabil(entidadeMov);
+	} 
+	
+	public void executarProcedureBalanceteRede(String idHoteis, Long idRedeHotel, Date data, String cnpj)throws MozartSessionException{
+		session.executarProcedureBalanceteRede(idHoteis, idRedeHotel, data, cnpj);
+	}
+
+	public void executarProcedureTotLote(String idHoteis, Long idHotel, RedeHotelEJB redeHotelEJB, Date data, String cnpj)throws MozartSessionException{
+		session.executarProcedureTotLote(idHoteis, idHotel, redeHotelEJB, data, cnpj);
+
+		
+	}
+
+	public List<DemonstrativoVO> obterDemonstrativoPlanoContas(
+			RedeHotelEJB redeHotelEJB) throws MozartSessionException{
+
+		return session.obterDemonstrativoPlanoContas(redeHotelEJB);
+	} 
+
+	public List<DemonstrativoVO> obterDemonstrativoResultado(
+			RedeHotelEJB redeHotelEJB) throws MozartSessionException{
+
+		return session.obterDemonstrativoResultado(redeHotelEJB);
+	}
+
+	public void gravarDemonstrativos(DemonstrativoVO entidade) throws MozartSessionException{
+		session.gravarDemonstrativos(entidade);
+		
+	} 
+	
+	public List<ClassificacaoContabilFaturamentoVO> obterComboCredito(RedeHotelEJB redeHotelEJB, String valor) throws MozartSessionException{
+		return session.obterComboCredito(redeHotelEJB, valor);
+	}
+	
+	public List<ClassificacaoContabilFaturamentoVO> obterComboDebito(RedeHotelEJB redeHotelEJB, String valor) throws MozartSessionException{
+		return obterComboDebito(redeHotelEJB, valor, null);
+	}
+	public List<ClassificacaoContabilFaturamentoVO> obterComboDebito(RedeHotelEJB redeHotelEJB, String valor, String ativoPassivo) throws MozartSessionException{
+		return session.obterComboDebito(redeHotelEJB, valor, ativoPassivo);
+	}
+	
+	public List<ClassificacaoContabilCentroCustoVO> obterComboCentroCusto(RedeHotelEJB redeHotelEJB) throws MozartSessionException{
+		return session.obterComboCentroCusto(redeHotelEJB);
+	}
+	
+	public void salvarClassificacaoContabilFaturamento(ClassificacaoContabilEJB faturamento) throws MozartSessionException{
+		session.salvarClassificacaoContabilFaturamento(faturamento);
+	}
+	public void alterarClassificacaoContabilFaturamento(ClassificacaoContabilEJB faturamento) throws MozartSessionException{
+		session.alterarClassificacaoContabilFaturamento(faturamento);
+	}
+
+	public Long obterNextVal() throws MozartSessionException{
+		return session.obterNextVal();
+	}
+
+	public List<ClassificacaoContabilFaturamentoGrupoVO> pesquisarClassificacaoContabilFaturamento(
+			ClassificacaoContabilFaturamentoGrupoVO filtro)  throws MozartSessionException{
+		return session.pesquisarClassificacaoContabilFaturamento(filtro);
+	}
+
+	public List<ClassificacaoContabilEJB> obterClassificacaoContabilFaturamento(ClassificacaoContabilEJB faturamento) throws MozartSessionException{
+		
+		return session.obterClassificacaoContabilFaturamento(faturamento);
+	}
+    
+	public List<ClassificacaoContabilPadraoVO> pesquisarClassificacaoContabilPadrao(ClassificacaoContabilPadraoVO padrao) throws MozartSessionException{
+		return session.pesquisarClassificacaoContabilPadrao(padrao);
+	}
+
+	public void salvarClassificacaoContabil(ClassificacaoContabilEJB obj) throws MozartSessionException {
+		session.salvarClassificacaoContabil(obj);
+	}
+	public ClassificacaoContabilEJB obterClassificacaoContabilPorId(Long idClassificacaoContabil) throws MozartSessionException {
+		return session.obterClassificacaoContabilPorId(idClassificacaoContabil);
+	}
+	public void removerClassificacaoContabil(ClassificacaoContabilEJB classificacaoContabil) throws MozartSessionException {
+		session.removerClassificacaoContabil(classificacaoContabil);
+	}
+	
+	public void alterarClassificacaoContabil(ClassificacaoContabilEJB classificacaoContabil) throws MozartSessionException{
+		session.alterarClassificacaoContabil(classificacaoContabil);
+	}
+	public CentroCustoContabilEJB buscarCentroCustoContabil(CentroCustoContabilEJB centroCustoContabil) throws MozartSessionException{
+		return session.buscarCentroCustoContabil(centroCustoContabil);
+	}
+	public Long obterMaxControleAtivoFixoMovimentoContabilPorHotel(Long pIdHotel)throws MozartSessionException{
+		return session.obterMaxControleAtivoFixoMovimentoContabilPorHotel(pIdHotel);
+	} 
+	
+	public List<ImobilizadoDepreciacaoVO> pesquisarImobilizadoDepreciacao(ImobilizadoDepreciacaoVO filtro, HotelEJB hotel) throws MozartSessionException {
+		return session.pesquisarImobilizadoDepreciacao(filtro, hotel);
+	}
+	
+	public ImobilizadoDepreciacaoVO obterImobilizadoDepreciacao(long idMovimentoContabil, HotelEJB hotel) throws MozartSessionException {
+		return session.obterImobilizadoDepreciacao(idMovimentoContabil, hotel);
+	}
+	
+	public Long verificaDepreciacaoJaLancada(long idHotel) throws MozartSessionException {
+		return session.verificaDepreciacaoJaLancada(idHotel);
+	}
+	
+	public List<String> obterValidacaoControleAtivoFixo(Long pIdHotel, Long pIdRedeHotel) throws MozartSessionException {
+		return session.obterValidacaoControleAtivoFixo(pIdHotel, pIdRedeHotel);
+	}
+	
+	public void executarProcedureCalculoDepreciacao(Long idHotel) throws MozartSessionException {
+		session.executarProcedureCalculoDepreciacao(idHotel);
+	}
+	
+	public List<PlanoContaVO> obterComboPlanoConta(PlanoContaVO filtro) throws MozartSessionException {
+		return session.obterComboPlanoConta(filtro);
+	}
+	
+	public List<String> obterComboControleAtivoFixo(Long pIdHotel) throws MozartSessionException {
+		return session.obterComboControleAtivoFixo(pIdHotel);
+	}
+	
+	public Long verificaQuantidadePlanoConta(long idPlanoConta) throws MozartSessionException{
+		return session.verificaQuantidadePlanoConta(idPlanoConta);
+	}
+}
