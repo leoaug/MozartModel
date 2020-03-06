@@ -33,9 +33,9 @@ public class ApiVendedorEJB extends MozartEntity {
 	@JoinColumn(name = "ID_HOTEL", referencedColumnName = "ID_HOTEL")
 	private HotelEJB hotel;
 
-	
+	@Column(name = "API_NOME")
 	private String nome;
-	
+	 
 	private String ativo;
 
 	public Long getIdApiVendedor() {

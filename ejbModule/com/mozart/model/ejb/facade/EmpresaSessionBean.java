@@ -1,5 +1,6 @@
 package com.mozart.model.ejb.facade;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -476,5 +477,78 @@ public class EmpresaSessionBean implements EmpresaSession {
 		} catch (Exception ex) {
 		}
 		return empresaVO;
+	}
+	
+	
+	public EmpresaEJB obterEmpresaPorNomeCnpj(EmpresaVO filtro)
+			throws MozartSessionException {
+		if ((MozartUtil.isNull(filtro))
+				|| (MozartUtil.isNull(filtro.getRazaoSocial()))) {
+			throw new MozartValidateException("Filtro inválido");
+		}
+		String sql = "SELECT ID_EMPRESA, "
+				+ "			 CGC, "
+				+ "NOME_FANTASIA, "
+				+ "RAZAO_SOCIAL, "
+				+ "ENDERECO, "
+				+ "BAIRRO, "
+				+ "CEP, "
+				+ "ID_CIDADE, "
+				+ "ADATA_CADASTRO, "
+				+ "INSC_MUNICIPAL, "
+				+ "INSC_ESTADUAL, "
+				+ "INSC_EMBRATUR, "
+				+ "INSC_IATA, "
+				+ "CARTAO_CREDITO, "
+				+ "NACIONAL, "
+				+ "CODIGO, CLIENTE, "
+				+ "FORNECEDOR, "
+				+ "TERCEIRIZADA, "
+				+ "TIPO, NUMERO, C"
+				+ "OMPLEMENTO \n" + 
+				"FROM MOZART.EMPRESA EMP WHERE CGC = '"+filtro.getCnpj().trim()+"' AND RAZAO_SOCIAL ='"+filtro.getRazaoSocial().trim()+"'";
+		
+		List<EmpresaEJB> lista = new ArrayList<EmpresaEJB>();
+		
+		List<Object[]> resultado = this.entityManager.createNativeQuery(sql).getResultList();
+		for (Object[] colunas : resultado) {
+		
+			BigDecimal id = (BigDecimal) colunas[0];
+			
+			lista.add(this.entityManager.find(EmpresaEJB.class, Long.parseLong(id.toString()))); 
+				
+		}
+		
+		if (MozartUtil.isNull(lista)) {
+			return null;
+		}
+		return (EmpresaEJB) lista.get(0);
+	}
+	
+	public List <EmpresaEJB> consultarEmpresaPorRazaoSocialLike(EmpresaEJB filtro){
+		
+		List <EmpresaEJB> lista = new ArrayList<EmpresaEJB>();
+		
+		String sql = " SELECT CGC||' - '||RAZAO_SOCIAL, \n" + 
+				"	  MIN(ID_EMPRESA)  \n" + 
+				"FROM EMPRESA \r\n" + 
+				"WHERE (LENGTH(CGC) = 11 OR LENGTH(CGC) = 14)   \r\n" + 
+				"AND (UPPER(TRIM(RAZAO_SOCIAL)) LIKE '%' || '"+filtro.getRazaoSocial().toUpperCase()+"' ||'%'  OR UPPER(TRIM(CGC))LIKE '%'  || '"+filtro.getRazaoSocial()+"'  ||'%')  \r\n" + 
+				"    GROUP BY CGC, RAZAO_SOCIAL";
+		
+		List<Object[]> resultado = this.entityManager.createNativeQuery(sql).getResultList();
+		for (Object[] colunas : resultado) {
+			
+			BigDecimal id = (BigDecimal) colunas[1];
+			//EmpresaEJB ejb = this.entityManager.find(EmpresaEJB.class, Long.parseLong(id.toString()));		
+			EmpresaEJB ejb = new EmpresaEJB();
+			ejb.setIdEmpresa(Long.parseLong(id.toString()));
+			ejb.setRazaoSocialCGC((String) colunas[0]);
+		
+			
+			lista.add(ejb);
+		}
+		
+		return lista;
 	}
 }

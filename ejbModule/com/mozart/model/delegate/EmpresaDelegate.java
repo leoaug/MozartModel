@@ -129,4 +129,13 @@ public class EmpresaDelegate extends MozartDelegate {
 			throws MozartSessionException {
 		return session.obterVendedor(filtro);
 	}
+	
+	public EmpresaEJB obterEmpresaPorNomeCnpj(EmpresaVO filtro) throws MozartSessionException {
+		return session.obterEmpresaPorNomeCnpj(filtro);
+	}
+	
+	public  List <EmpresaEJB> consultarEmpresaPorRazaoSocialLike(EmpresaEJB filtro) throws MozartSessionException {
+		return session.consultarEmpresaPorRazaoSocialLike(filtro);
+	}
+	
 }

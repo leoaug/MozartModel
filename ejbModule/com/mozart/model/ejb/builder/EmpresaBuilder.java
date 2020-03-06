@@ -85,7 +85,7 @@ public class EmpresaBuilder {
 		retorno.setEmpresaJuntaEJB(empresaJuntaEJB);
 		retorno.setEmpresaSocioEJBList(empresaSocioEJBList);
 		retorno.setServicosContratoEJBList(servicosContratoEJBList);
-		retorno.setCpf(cpf);
+		//retorno.setCpf(cpf);
 
 		return retorno;
 	}

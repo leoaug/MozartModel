@@ -19,6 +19,7 @@ import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.QueryHint;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.mozart.model.util.MozartUtil;
 
@@ -77,7 +78,7 @@ public class EmpresaEJB extends MozartEntity {
 	private String razaoSocial;
 	private String terceirizada;
 	private String tipo;
-	private String cpf;
+
 
 	@OneToMany(mappedBy = "empresaEJB", cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
 	private List<EmpresaTerceirizadaEJB> empresaTerceirizadaEJBList;
@@ -103,6 +104,9 @@ public class EmpresaEJB extends MozartEntity {
 			CascadeType.REFRESH }, fetch = FetchType.EAGER)
 	private List<ServicosContratoEJB> servicosContratoEJBList;
 
+	@Transient
+	private String razaoSocialCGC;
+	
 	public EmpresaEJB() {
 		// empresaJuntaEJB = new EmpresaJuntaEJB();
 		// empresaJuntaEJB.setEmpresaEJB( this );
@@ -399,20 +403,22 @@ public class EmpresaEJB extends MozartEntity {
 		this.complemento = complemento;
 	}
 
-	public String getCpf() {
-		return cpf;
-	}
-
-	public void setCpf(String cpf) {
-		this.cpf = cpf;
-	}
-
+	
 	public List<ServicosContratoEJB> getServicosContratoEJBList() {
 		return servicosContratoEJBList;
 	}
 
 	public void setServicosContratoEJBList(List<ServicosContratoEJB> servicosContratoEJBList) {
 		this.servicosContratoEJBList = servicosContratoEJBList;
+	}
+
+	
+	public String getRazaoSocialCGC() {
+		return razaoSocialCGC;
+	}
+
+	public void setRazaoSocialCGC(String razaoSocialCGC) {
+		this.razaoSocialCGC = razaoSocialCGC;
 	}
 
 	public ServicosContratoEJB addServicosContratoEJB(ServicosContratoEJB servicosContratoEJB) {

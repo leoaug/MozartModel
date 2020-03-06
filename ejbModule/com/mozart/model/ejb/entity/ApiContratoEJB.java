@@ -33,14 +33,17 @@ public class ApiContratoEJB extends MozartEntity {
 	@JoinColumn(name = "ID_HOTEL", referencedColumnName = "ID_HOTEL")
 	private HotelEJB hotel;
 		
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "ID_TIPO_LANCAMENTO", referencedColumnName = "ID_TIPO_LANCAMENTO")
-	private TipoLancamentoEJB tipoLancamento;
+	//@ManyToOne(fetch = FetchType.EAGER)
+	//@JoinColumn(name = "ID_TIPO_LANCAMENTO", referencedColumnName = "ID_TIPO_LANCAMENTO")
+	@Column(name = "ID_TIPO_LANCAMENTO")
+	private Long idTipoLancamento;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "ID_TIPO_LANCAMENTO", referencedColumnName = "ID_TIPO_LANCAMENTO")
-	private TipoLancamentoEJB tipoLancamentoCk;
+	//@ManyToOne(fetch = FetchType.EAGER)
+	//@JoinColumn(name = "ID_TIPO_LANCAMENTO_CK", referencedColumnName = "ID_TIPO_LANCAMENTO")
+	@Column(name = "ID_TIPO_LANCAMENTO_CK")
+	private Long idTipoLancamentoCk;
 	
+	@Column(name = "API_NOME")
 	private String nome;
 	
 	private String ativo;
@@ -85,6 +88,24 @@ public class ApiContratoEJB extends MozartEntity {
 		this.hotel = hotel;
 	}
 
+	public Long getIdTipoLancamento() {
+		return idTipoLancamento;
+	}
+
+	public void setIdTipoLancamento(Long idTipoLancamento) {
+		this.idTipoLancamento = idTipoLancamento;
+	}
+
+	public Long getIdTipoLancamentoCk() {
+		return idTipoLancamentoCk;
+	}
+
+	public void setIdTipoLancamentoCk(Long idTipoLancamentoCk) {
+		this.idTipoLancamentoCk = idTipoLancamentoCk;
+	}
+	
+	
+	/*
 	public TipoLancamentoEJB getTipoLancamento() {
 		return tipoLancamento;
 	}
@@ -93,6 +114,7 @@ public class ApiContratoEJB extends MozartEntity {
 		this.tipoLancamento = tipoLancamento;
 	}
 
+	
 	public TipoLancamentoEJB getTipoLancamentoCk() {
 		return tipoLancamentoCk;
 	}
@@ -100,7 +122,7 @@ public class ApiContratoEJB extends MozartEntity {
 	public void setTipoLancamentoCk(TipoLancamentoEJB tipoLancamentoCk) {
 		this.tipoLancamentoCk = tipoLancamentoCk;
 	}
-	
+	*/
 	
 	
 }

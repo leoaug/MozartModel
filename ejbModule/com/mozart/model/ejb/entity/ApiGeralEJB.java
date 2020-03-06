@@ -12,6 +12,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.QueryHint;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @SuppressWarnings("serial")
 @Entity
@@ -36,6 +37,20 @@ public class ApiGeralEJB extends MozartEntity {
 	private String nome;
 	
 	private String ativo;
+	
+	@Transient
+	private String palavra;
+	
+	
+	
+
+	public String getPalavra() {
+		return palavra;
+	}
+
+	public void setPalavra(String palavra) {
+		this.palavra = palavra;
+	}
 
 	public Long getIdApiGeral() {
 		return idApiGeral;

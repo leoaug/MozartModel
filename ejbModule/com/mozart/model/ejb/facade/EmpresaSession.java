@@ -82,4 +82,8 @@ public abstract interface EmpresaSession {
 	public abstract List<VendedorRedeEJB> obterVendedor(VendedorRedeEJB filtro) throws MozartSessionException;
 	
 	public abstract List<RepresentanteRedeEJB> obterRepresentante(RepresentanteRedeEJB filtro) throws MozartSessionException;
+	
+	public abstract List <EmpresaEJB> consultarEmpresaPorRazaoSocialLike(EmpresaEJB filtro) throws MozartSessionException;
+	
+	public abstract EmpresaEJB obterEmpresaPorNomeCnpj(EmpresaVO filtro) throws MozartSessionException;
 }

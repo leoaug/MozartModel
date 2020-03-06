@@ -33,8 +33,6 @@ public class PromotorEJB extends MozartEntity {
 	@Column(name="ID_REDE_HOTEL")
 	private Long idRedeHotel;
 
-	@Column(name="TIPO_PROMOTOR")
-	private String tipoPromotor;
 
 	@Column(name="ATIVO")
 	private String ativo;
@@ -100,13 +98,6 @@ public class PromotorEJB extends MozartEntity {
 		this.promotor = promotor;
 	}
 
-	public String getTipoPromotor() {
-		return tipoPromotor;
-	}
-
-	public void setTipoPromotor(String tipoPromotor) {
-		this.tipoPromotor = tipoPromotor;
-	}
 
 	public String getAtivo() {
 		return ativo;
