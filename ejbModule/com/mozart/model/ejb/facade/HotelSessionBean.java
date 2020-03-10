@@ -6,6 +6,8 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+
+import com.mozart.model.ejb.entity.HotelEJB;
 import com.mozart.model.exception.MozartSessionException;
 import com.mozart.model.vo.HotelVO;
 
@@ -39,6 +41,11 @@ public class HotelSessionBean implements HotelSession {
 		}
 		
 		return listaHoteis;
+	}
+
+	@Override
+	public HotelEJB consultarHotelPorId(Long idHotel) throws MozartSessionException {
+		return this.entityManager.find(HotelEJB.class, idHotel);
 	}
 
 }

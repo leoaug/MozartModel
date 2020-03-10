@@ -33,4 +33,8 @@ public class HotelDelegate extends MozartDelegate {
 	public List <HotelVO> consultarHoteisAtivos() throws MozartSessionException {
 		return session.consultarHoteisAtivos();
 	}
+
+	public HotelEJB consultarHotelPorId(Long idHotel) throws MozartSessionException {
+		return session.consultarHotelPorId(idHotel);
+	}
 }

@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.ejb.Remote;
 
-import com.mozart.model.ejb.entity.TransacaoWebEJB;
+import com.mozart.model.ejb.entity.HotelEJB;
 import com.mozart.model.exception.MozartSessionException;
 import com.mozart.model.vo.HotelVO;
 
@@ -13,4 +13,6 @@ import com.mozart.model.vo.HotelVO;
 public interface HotelSession {
 
 	List <HotelVO> consultarHoteisAtivos()  throws MozartSessionException;
+
+	HotelEJB consultarHotelPorId(Long idHotel) throws MozartSessionException;
 }
