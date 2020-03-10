@@ -15,6 +15,8 @@ public class MiniPdvVO extends MozartVO {
 	/* FILTRO */
 	private FiltroWeb filtroCheckin;
 	private FiltroWeb filtroNumApartamento;
+	private FiltroWeb filtroData;
+	
 	
 
 	
@@ -35,6 +37,7 @@ public class MiniPdvVO extends MozartVO {
 		
 		filtroCheckin = new FiltroWeb();
 		filtroNumApartamento = new FiltroWeb();		
+		filtroData = new FiltroWeb();
 		
 		
 	}	
@@ -156,6 +159,15 @@ public class MiniPdvVO extends MozartVO {
 		this.qtde = qtde;
 	}
 
+	public FiltroWeb getFiltroData() {
+		return filtroData;
+	}
+
+	public void setFiltroData(FiltroWeb filtroData) {
+		this.filtroData = filtroData;
+	}
+
+	
 
 
 }

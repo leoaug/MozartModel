@@ -426,6 +426,11 @@ public class CaixaGeralSessionBean implements CaixaGeralSession {
 					    if (!MozartUtil.isNull( filtro.getFiltroNumApartamento().getTipoIntervalo())){
 					    	sql += " AND A.NUM_APARTAMENTO " + filtro.getFiltroNumApartamento();
 					    }
+					    
+					    if (!MozartUtil.isNull( filtro.getFiltroData())){
+					    	sql += " AND MMPDV.DATA " + filtro.getFiltroData();
+					    }
+					    
 					    	 sql += " and instr('"+filtro.getIdHoteisSQL()+"', ';'||mmpdv.id_hotel||';') >= 1 ";
 			            
 					    sql += " ORDER BY A.NUM_APARTAMENTO ";
