@@ -15,6 +15,7 @@ import com.mozart.model.ejb.entity.ApiGeralEJB;
 import com.mozart.model.ejb.facade.interceptor.UsuarioSessionInfoInterceptor;
 import com.mozart.model.exception.MozartSessionException;
 import com.mozart.model.exception.MozartValidateException;
+import com.mozart.model.util.MozartUtil;
 import com.mozart.model.vo.ApiGeralVO;
 
 @SuppressWarnings("unchecked")
@@ -29,28 +30,58 @@ public class ApiGeralSessionEJBBean implements ApiGeralSessionEJB {
 		
 		List <ApiGeralVO> lista = new ArrayList <ApiGeralVO> ();
 		
-		if (filtro.getRazaoSocial() == null) {
-			throw new MozartValidateException("Razão Social é obrigatório");
-		}
+		//if (filtro.getRazaoSocial() == null) {
+			//throw new MozartValidateException("Razão Social é obrigatório");
+		//}
+		String sql = "";
 		
-		
-		String sql = "SELECT AG.NOME, \n"
-						+ "AG.ATIVO, \n"
-						+ "E.RAZAO_SOCIAL, \n"
-						+ " AG.TOKEN, \n"
-						+ "AG.URL, \n"
-						+ "AG.ID_API_GERAL, \n" 
-						+ "AC.API_NOME, \n"
-						+ "AC.ATIVO, \n"
-						+ "H.NOME_FANTASIA, \n"
-						+ "TL.DESCRICAO_LANCAMENTO, \n"
-						+ "TLCK.DESCRICAO_LANCAMENTO, \n"
-						+ "AC.ID_API_CONTRATO,  \n" 
-						+ "AP.API_NOME, \n"
-						+ "AP.ATIVO, \n"
-						+ "HTL.NOME_FANTASIA, \n"
-						+ "AP.ID_API_VENDEDOR \n" + 
-				"FROM API_GERAL AG \n" + 
+		if (filtro.getRazaoSocial().getTipoIntervalo().equals("")){
+			sql = "SELECT AG.NOME, \n"
+					+ "AG.ATIVO, \n"
+					+ "E.RAZAO_SOCIAL, \n"
+					+ " AG.TOKEN, \n"
+					+ "AG.URL, \n"
+					+ "AG.ID_API_GERAL, \n" 
+					+ "AC.API_NOME, \n"
+					+ "AC.ATIVO, \n"
+					+ "H.NOME_FANTASIA, \n"
+					+ "TL.DESCRICAO_LANCAMENTO, \n"
+					+ "TLCK.DESCRICAO_LANCAMENTO, \n"
+					+ "AC.ID_API_CONTRATO,  \n" 
+					+ "AP.API_NOME, \n"
+					+ "AP.ATIVO, \n"
+					+ "HTL.NOME_FANTASIA, \n"
+					+ "AP.ID_API_VENDEDOR \n" + 
+					"FROM API_GERAL AG \n" + 
+
+					"JOIN API_CONTRATO AC ON (AG.ID_API_GERAL = AC.ID_API_GERAL) \n" + 
+					"JOIN API_VENDEDOR AP ON (AG.ID_API_GERAL = AP.ID_API_GERAL) \n" + 
+					"JOIN HOTEL H ON (AC.ID_HOTEL = H.ID_HOTEL) \n" + 
+					"JOIN HOTEL HTL ON (AP.ID_HOTEL = HTL.ID_HOTEL) \n" + 
+					"JOIN EMPRESA E ON (AG.ID_EMPRESA = E.ID_EMPRESA) \n" + 
+					"JOIN TIPO_LANCAMENTO TL ON (AC.ID_TIPO_LANCAMENTO = TL.ID_TIPO_LANCAMENTO ) \n" + 
+					"JOIN TIPO_LANCAMENTO TLCK ON (AC.ID_TIPO_LANCAMENTO_CK = TLCK.ID_TIPO_LANCAMENTO ) \n" +
+					"\n ORDER BY E.RAZAO_SOCIAL,AG.URL";
+			
+		} else {
+
+			sql = "SELECT AG.NOME, \n"
+					+ "AG.ATIVO, \n"
+					+ "E.RAZAO_SOCIAL, \n"
+					+ " AG.TOKEN, \n"
+					+ "AG.URL, \n"
+					+ "AG.ID_API_GERAL, \n" 
+					+ "AC.API_NOME, \n"
+					+ "AC.ATIVO, \n"
+					+ "H.NOME_FANTASIA, \n"
+					+ "TL.DESCRICAO_LANCAMENTO, \n"
+					+ "TLCK.DESCRICAO_LANCAMENTO, \n"
+					+ "AC.ID_API_CONTRATO,  \n" 
+					+ "AP.API_NOME, \n"
+					+ "AP.ATIVO, \n"
+					+ "HTL.NOME_FANTASIA, \n"
+					+ "AP.ID_API_VENDEDOR \n" + 
+					"FROM API_GERAL AG \n" + 
 
 					"JOIN API_CONTRATO AC ON (AG.ID_API_GERAL = AC.ID_API_GERAL) \n" + 
 					"JOIN API_VENDEDOR AP ON (AG.ID_API_GERAL = AP.ID_API_GERAL) \n" + 
@@ -59,9 +90,9 @@ public class ApiGeralSessionEJBBean implements ApiGeralSessionEJB {
 					"JOIN EMPRESA E ON (AG.ID_EMPRESA = E.ID_EMPRESA) \n" + 
 					"JOIN TIPO_LANCAMENTO TL ON (AC.ID_TIPO_LANCAMENTO = TL.ID_TIPO_LANCAMENTO ) \n" + 
 					"JOIN TIPO_LANCAMENTO TLCK ON (AC.ID_TIPO_LANCAMENTO_CK = TLCK.ID_TIPO_LANCAMENTO ) \n" + 
-				"WHERE E.RAZAO_SOCIAL " + filtro.getRazaoSocial().toString() +
+					"WHERE E.RAZAO_SOCIAL " + filtro.getRazaoSocial().toString() +
 					"\n ORDER BY E.RAZAO_SOCIAL,AG.URL";
-		
+		}
 		List <Object[]> listaQuery = this.entityManager.createNativeQuery(sql).getResultList();
 		
 		for(Object[] obj : listaQuery) {

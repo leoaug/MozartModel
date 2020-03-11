@@ -424,4 +424,8 @@ public class CheckinDelegate extends MozartDelegate {
 	public CidadeEJB pesquisarCidadePorCodigoIBGE(Long valor) {
 		return session.pesquisarCidadePorCodigoIBGE(valor);
 	}
+	
+	public List <CheckinVO> pesquisarChekinPorApartamentoOuHospedeLike(CheckinVO filtro) throws MozartSessionException{
+		return session.pesquisarChekinPorApartamentoOuHospedeLike(filtro);
+	}
 }

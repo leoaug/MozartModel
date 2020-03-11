@@ -55,6 +55,7 @@ import com.mozart.model.exception.MozartSessionException;
 import com.mozart.model.exception.MozartValidateException;
 import com.mozart.model.util.MozartUtil;
 import com.mozart.model.vo.ApartamentoVO;
+import com.mozart.model.vo.ApiGeralVO;
 import com.mozart.model.vo.ChartApartamentoVO;
 import com.mozart.model.vo.CheckinVO;
 import com.mozart.model.vo.ContaCorrenteGeralVO;
@@ -2413,5 +2414,40 @@ public class CheckinSessionBean implements CheckinSession {
 		return (CidadeEJB)this.manager.createQuery(sb.toString())
 				.setHint("eclipselink.refresh", "TRUE")
 				.setParameter(1, valor).getSingleResult();
+	}
+
+	@Override
+	public List<CheckinVO> pesquisarChekinPorApartamentoOuHospedeLike(CheckinVO filtro) {
+		
+		String sql = "select c.id_checkin,"
+						+ "(a.num_apartamento||' - '|| hosp.nome_hospede||' '||hosp.sobrenome_hospede) apartamento  \r\n" + 
+					"from checkin c \r\n" + 
+							"join room_list rl on c.id_checkin = rl.id_checkin \r\n" + 
+							"join hospede hosp on rl.id_hospede = hosp.id_hospede \r\n" + 
+							"join apartamento a on c.id_apartamento = a.id_apartamento \r\n" + 
+					"where c.id_hotel = "+filtro.getIdHoteis()[0]+ " \r\n" + 
+							"and c.checkout = 'N' \r\n" + 
+							"and rl.data_saida is null \r\n" + 
+							"and rl.principal = 'S' \r\n" + 
+							"AND (UPPER(TRIM(A.NUM_APARTAMENTO)) LIKE '%"+filtro.getNomeHospede().toUpperCase()+"%' \r\n" + 
+							"OR UPPER(TRIM(hosp.nome_hospede)) LIKE  '%"+filtro.getNomeHospede().toUpperCase()+"%'  \r\n" + 
+							"OR UPPER(TRIM(hosp.sobrenome_hospede)) LIKE '%"+filtro.getNomeHospede().toUpperCase() +"%')\r\n" + 
+					"order by a.num_apartamento";
+		
+		
+		List <CheckinVO> lista = new ArrayList<>();
+		
+		List <Object[]> listaQuery = this.manager.createNativeQuery(sql).getResultList();
+		
+		for(Object[] obj : listaQuery) {
+			Object[] param = (Object[]) obj;
+			
+			CheckinVO vo = new CheckinVO();
+			vo.setIdCheckin(Long.parseLong(param[0].toString()));
+			vo.setNomeHospede(param[1] == null ? null : param[1].toString());
+			lista.add(vo);
+		}
+		
+		return lista;
 	}
 }

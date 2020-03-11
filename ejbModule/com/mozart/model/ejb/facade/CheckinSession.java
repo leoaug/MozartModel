@@ -449,5 +449,7 @@ public abstract interface CheckinSession {
 	public List<MovimentoApartamentoEJB> obterMovimentosPorIdNota(Long idNota) throws MozartSessionException;
 
 	public abstract CidadeEJB pesquisarCidadePorCodigoIBGE(Long valor);
+
+	public abstract List<CheckinVO> pesquisarChekinPorApartamentoOuHospedeLike(CheckinVO filtro);
 	
 }
