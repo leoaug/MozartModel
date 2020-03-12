@@ -95,7 +95,12 @@ public class UsuarioDelegate extends MozartDelegate{
         try{
             session.salvarUsuario( usuario, listProgramas );
         }catch(Exception ex){
-            throw new MozartSessionException( ex.getMessage() );
+            if(ex.getCause() != null && ex.getCause().getCause() != null && ex.getCause().getCause().getMessage().contains("restrição exclusiva (MOZART.IDX_USER_NICK) violada")) {
+            	throw new MozartSessionException( ex.getCause().getCause().getMessage() );
+            } else {
+            	throw new MozartSessionException( ex.getMessage() );
+            }
+        	
         }
     }
     

@@ -417,8 +417,8 @@ public class CaixaGeralSessionBean implements CaixaGeralSession {
 		
 		try{
 				String sql = QUERY_MINI_PDV;
-
 					    
+				
 					    if (!MozartUtil.isNull( filtro.getFiltroCheckin().getTipoIntervalo())){
 					    	sql += " AND C.ID_CHECKIN " + filtro.getFiltroCheckin();
 					    }
@@ -427,8 +427,12 @@ public class CaixaGeralSessionBean implements CaixaGeralSession {
 					    	sql += " AND A.NUM_APARTAMENTO " + filtro.getFiltroNumApartamento();
 					    }
 					    
-					    if (!MozartUtil.isNull( filtro.getFiltroData())){
+					    if (!MozartUtil.isNull( filtro.getFiltroData().getTipoIntervalo())){
 					    	sql += " AND MMPDV.DATA " + filtro.getFiltroData();
+					    }
+					    
+					    if (!MozartUtil.isNull( filtro.getFiltroPontoVenda().getTipoIntervalo())){
+					    	sql += " AND PV.NOME_PONTO_VENDA " + filtro.getFiltroPontoVenda();
 					    }
 					    
 					    	 sql += " and instr('"+filtro.getIdHoteisSQL()+"', ';'||mmpdv.id_hotel||';') >= 1 ";
