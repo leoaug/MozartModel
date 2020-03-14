@@ -11,6 +11,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import com.mozart.model.ejb.entity.TipoLancamentoEJB;
+import com.mozart.model.ejb.entity.TipoLancamentoEJBPK;
 import com.mozart.model.exception.MozartSessionException;
 import com.mozart.model.vo.HotelVO;
 import com.mozart.model.vo.TipoLancamentoVO;
@@ -93,9 +94,10 @@ public class TipoLancamentoSessionBean implements TipoLancamentoSession{
 
 	@Override
 	@TransactionAttribute(value = TransactionAttributeType.SUPPORTS)
-	public TipoLancamentoEJB consultarTipoLancamentoPorId(Long id) throws MozartSessionException  {
+	public TipoLancamentoEJB consultarTipoLancamentoEJBPK(TipoLancamentoEJBPK tipoLancamentoEJBPK) throws MozartSessionException  {
 		// TODO Auto-generated method stub
-		return  this.entityManager.find(TipoLancamentoEJB.class, id);
+	
+		return  this.entityManager.find(TipoLancamentoEJB.class, tipoLancamentoEJBPK);
 	}
 	
 	

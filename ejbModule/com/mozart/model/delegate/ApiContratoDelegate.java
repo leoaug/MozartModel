@@ -3,6 +3,7 @@ package com.mozart.model.delegate;
 import java.util.List;
 
 import com.mozart.model.ejb.entity.ApiContratoEJB;
+import com.mozart.model.ejb.entity.ApiGeralEJB;
 import com.mozart.model.ejb.facade.ApiContratoSessionEJB;
 import com.mozart.model.exception.MozartSessionException;
 
@@ -31,5 +32,9 @@ public class ApiContratoDelegate extends MozartDelegate {
 	public ApiContratoEJB gravarApiContrato(ApiContratoEJB entidade) throws MozartSessionException {
 		// TODO Auto-generated method stub
 		return session.gravarApiContrato(entidade);
+	}
+
+	public ApiContratoEJB consultarPorApiGeral(ApiGeralEJB entidade) {
+		return session.consultarPorApiGeral(entidade);
 	}
 }

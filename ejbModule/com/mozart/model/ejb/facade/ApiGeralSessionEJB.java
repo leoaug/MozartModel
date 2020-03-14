@@ -13,4 +13,5 @@ public abstract interface ApiGeralSessionEJB {
 
 	public abstract List<ApiGeralVO> obterApisGeraisPorRazaoSocial(ApiGeralVO filtro) throws MozartSessionException;
 	public abstract ApiGeralEJB gravarApiGeral(ApiGeralEJB entidade) throws MozartSessionException;
+	public abstract ApiGeralEJB obter(Long idApiGeral);
 }

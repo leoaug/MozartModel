@@ -36,4 +36,8 @@ public class ApiGeralDelegate extends MozartDelegate {
 		// TODO Auto-generated method stub
 		return session.gravarApiGeral(entidade);
 	}
+
+	public ApiGeralEJB obter(Long idApiGeral) {
+		return session.obter(idApiGeral);
+	}
 }

@@ -3,6 +3,7 @@ package com.mozart.model.delegate;
 import java.util.List;
 
 import com.mozart.model.ejb.entity.TipoLancamentoEJB;
+import com.mozart.model.ejb.entity.TipoLancamentoEJBPK;
 import com.mozart.model.ejb.facade.TipoLancamentoSession;
 import com.mozart.model.exception.MozartSessionException;
 import com.mozart.model.vo.HotelVO;
@@ -36,7 +37,7 @@ public class TipoLancamentolDelegate extends MozartDelegate {
 	public List<TipoLancamentoVO> consultarTipoLancamentoReceita(HotelVO filtro) throws MozartSessionException {
 		return session.consultarTipoLancamentoReceita(filtro);
 	}
-	public TipoLancamentoEJB consultarTipoLancamentoPorId(Long id)  throws MozartSessionException {
-		return session.consultarTipoLancamentoPorId(id);
+	public TipoLancamentoEJB consultarTipoLancamentoEJBPK(TipoLancamentoEJBPK tipoLancamentoEJBPK)  throws MozartSessionException {
+		return session.consultarTipoLancamentoEJBPK(tipoLancamentoEJBPK);
 	}
 }

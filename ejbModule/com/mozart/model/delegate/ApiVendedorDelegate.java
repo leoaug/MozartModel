@@ -2,6 +2,7 @@ package com.mozart.model.delegate;
 
 import java.util.List;
 
+import com.mozart.model.ejb.entity.ApiGeralEJB;
 import com.mozart.model.ejb.entity.ApiVendedorEJB;
 import com.mozart.model.ejb.facade.ApiVendedorSessionEJB;
 import com.mozart.model.exception.MozartSessionException;
@@ -32,5 +33,9 @@ public class ApiVendedorDelegate extends MozartDelegate {
 	public ApiVendedorEJB gravarApiVendedor(ApiVendedorEJB entidade) throws MozartSessionException {
 		// TODO Auto-generated method stub
 		return session.gravarApiVendedor(entidade);
+	}
+
+	public ApiVendedorEJB consultarPorApiGeral(ApiGeralEJB entidade) {
+		return session.consultarPorApiGeral(entidade);
 	}
 }

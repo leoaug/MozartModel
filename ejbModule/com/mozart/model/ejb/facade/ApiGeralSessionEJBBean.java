@@ -135,4 +135,10 @@ public class ApiGeralSessionEJBBean implements ApiGeralSessionEJB {
 		}
 		return entidade;
 	}
+
+	@Override
+	public ApiGeralEJB obter(Long idApiGeral) {
+		// TODO Auto-generated method stub
+		return this.entityManager.find(ApiGeralEJB.class, idApiGeral);
+	}
 }

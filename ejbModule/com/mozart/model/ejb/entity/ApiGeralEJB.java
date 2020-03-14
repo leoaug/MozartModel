@@ -1,5 +1,7 @@
 package com.mozart.model.ejb.entity;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.QueryHint;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -40,8 +43,6 @@ public class ApiGeralEJB extends MozartEntity {
 	
 	@Transient
 	private String palavra;
-	
-	
 	
 
 	public String getPalavra() {
